@@ -23,6 +23,8 @@ node scripts/bump-version.mjs major
 node scripts/bump-version.mjs 1.2.0
 ```
 
+Finderから実行する場合は、`update-version.command` をダブルクリックします。確認後、パッチバージョンを1つ繰り上げます。`build.command` はビルドのみを行い、バージョンを変更しません。
+
 このコマンドはアプリとChrome拡張機能を同じバージョンへ更新します。現在のバージョンは `VERSION` ファイルで確認できます。
 
 ```sh
