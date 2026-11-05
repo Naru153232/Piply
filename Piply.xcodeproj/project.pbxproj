@@ -1,0 +1,417 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		1E1F65B3755CEF17E06F9C55 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65618469B6EAEF157953F073 /* main.swift */; };
+		3DF4DC92BB8151E402C18075 /* PiPPanelController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5973ED23486C186067BD7E99 /* PiPPanelController.swift */; };
+		3F6DA8272CB5FD3275F7728B /* ChromeCommandStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7937F937BA36045B706A4540 /* ChromeCommandStore.swift */; };
+		5C5C7DB841B6F4D19A9B350C /* PiplyApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2B2F8C83CE0A3F2A2A36A2D /* PiplyApp.swift */; };
+		A55E70012026110400000001 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A55E70022026110400000001 /* Assets.xcassets */; };
+		6A6C21A0D509C4C99E025EE4 /* ChromeIntegrationSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D55546E00749AA75F5ABEDF /* ChromeIntegrationSettings.swift */; };
+		9271D96B879D944A10B6C86D /* PiPContainerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B9E6CBC3DF0BFBB926FC29E /* PiPContainerView.swift */; };
+		BCAB0AB2800490C3B043317A /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F92D8DB95975A2A7B0B3A86 /* ContentView.swift */; };
+		D9A100012026110400000001 /* Localization.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9A100022026110400000001 /* Localization.swift */; };
+		D0C358F631E4FE35BA4C54D4 /* SourcePickerModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBCB8522CABF092F3A11A183 /* SourcePickerModel.swift */; };
+		D6ACAC79569F38D9682266BB /* CapturePreviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FDE32628FBEB6D156F4E052 /* CapturePreviewView.swift */; };
+		EA1AC9F2A59BE0A0D6136D76 /* CaptureSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8372AF3A4EF37C66A7D38E7 /* CaptureSource.swift */; };
+		F8F639D9126F1FEA731C2B47 /* ScreenStreamSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA312DE8043E8B581CD741BD /* ScreenStreamSession.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		3FDE32628FBEB6D156F4E052 /* CapturePreviewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CapturePreviewView.swift; sourceTree = "<group>"; };
+		5973ED23486C186067BD7E99 /* PiPPanelController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PiPPanelController.swift; sourceTree = "<group>"; };
+		65618469B6EAEF157953F073 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
+		7937F937BA36045B706A4540 /* ChromeCommandStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChromeCommandStore.swift; sourceTree = "<group>"; };
+		7F56DA1A25264AEEFD3CE3BC /* Piply.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Piply.entitlements; sourceTree = "<group>"; };
+		7F92D8DB95975A2A7B0B3A86 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		8A5B322725239BB4C25065AD /* Piply.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Piply.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		8B9E6CBC3DF0BFBB926FC29E /* PiPContainerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PiPContainerView.swift; sourceTree = "<group>"; };
+		9D55546E00749AA75F5ABEDF /* ChromeIntegrationSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChromeIntegrationSettings.swift; sourceTree = "<group>"; };
+		9F78D2AB88C61144ADD656CF /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		E8372AF3A4EF37C66A7D38E7 /* CaptureSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CaptureSource.swift; sourceTree = "<group>"; };
+		EA75554EF608F557005821ED /* PiplyNativeHost */ = {isa = PBXFileReference; includeInIndex = 0; path = PiplyNativeHost; sourceTree = BUILT_PRODUCTS_DIR; };
+		F2B2F8C83CE0A3F2A2A36A2D /* PiplyApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PiplyApp.swift; sourceTree = "<group>"; };
+		A55E70022026110400000001 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		D9A100022026110400000001 /* Localization.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Localization.swift; sourceTree = "<group>"; };
+		FA312DE8043E8B581CD741BD /* ScreenStreamSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenStreamSession.swift; sourceTree = "<group>"; };
+		FBCB8522CABF092F3A11A183 /* SourcePickerModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SourcePickerModel.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXGroup section */
+		0DDC2A36E052E2B4E693099B /* Piply */ = {
+			isa = PBXGroup;
+			children = (
+				3FDE32628FBEB6D156F4E052 /* CapturePreviewView.swift */,
+				E8372AF3A4EF37C66A7D38E7 /* CaptureSource.swift */,
+				7937F937BA36045B706A4540 /* ChromeCommandStore.swift */,
+				9D55546E00749AA75F5ABEDF /* ChromeIntegrationSettings.swift */,
+				7F92D8DB95975A2A7B0B3A86 /* ContentView.swift */,
+				D9A100022026110400000001 /* Localization.swift */,
+				9F78D2AB88C61144ADD656CF /* Info.plist */,
+				8B9E6CBC3DF0BFBB926FC29E /* PiPContainerView.swift */,
+				5973ED23486C186067BD7E99 /* PiPPanelController.swift */,
+				FA312DE8043E8B581CD741BD /* ScreenStreamSession.swift */,
+				FBCB8522CABF092F3A11A183 /* SourcePickerModel.swift */,
+				A55E70022026110400000001 /* Assets.xcassets */,
+				7F56DA1A25264AEEFD3CE3BC /* Piply.entitlements */,
+				F2B2F8C83CE0A3F2A2A36A2D /* PiplyApp.swift */,
+			);
+			path = Piply;
+			sourceTree = "<group>";
+		};
+		2181F53D14C1E3696AA1E321 = {
+			isa = PBXGroup;
+			children = (
+				A4699D6F5FCCA10A97ABF306 /* NativeHost */,
+				0DDC2A36E052E2B4E693099B /* Piply */,
+				3445E7299EE8D64DC86F65AB /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		3445E7299EE8D64DC86F65AB /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				8A5B322725239BB4C25065AD /* Piply.app */,
+				EA75554EF608F557005821ED /* PiplyNativeHost */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		A4699D6F5FCCA10A97ABF306 /* NativeHost */ = {
+			isa = PBXGroup;
+			children = (
+				65618469B6EAEF157953F073 /* main.swift */,
+			);
+			path = NativeHost;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		245C8C9F18F34853D6653245 /* Piply */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 307E6BDA0ED21174D048C6FA /* Build configuration list for PBXNativeTarget "Piply" */;
+			buildPhases = (
+				A3DE70A2D50883F25A43FEA5 /* Sources */,
+				A55E70032026110400000001 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = Piply;
+			packageProductDependencies = (
+			);
+			productName = Piply;
+			productReference = 8A5B322725239BB4C25065AD /* Piply.app */;
+			productType = "com.apple.product-type.application";
+		};
+		838E3E5EA15AE687BEAE6D82 /* PiplyNativeHost */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 4C99FAEAD768ADE3D70B58D5 /* Build configuration list for PBXNativeTarget "PiplyNativeHost" */;
+			buildPhases = (
+				A906A5B27F056F79BA7438C3 /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = PiplyNativeHost;
+			packageProductDependencies = (
+			);
+			productName = PiplyNativeHost;
+			productReference = EA75554EF608F557005821ED /* PiplyNativeHost */;
+			productType = "com.apple.product-type.tool";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		E3468CEF05040CA732C2AFAC /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 1430;
+				TargetAttributes = {
+				};
+			};
+			buildConfigurationList = 7AB808E2BC08AE1CFB930BB8 /* Build configuration list for PBXProject "Piply" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				Base,
+				en,
+			);
+			mainGroup = 2181F53D14C1E3696AA1E321;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
+			productRefGroup = 3445E7299EE8D64DC86F65AB /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				245C8C9F18F34853D6653245 /* Piply */,
+				838E3E5EA15AE687BEAE6D82 /* PiplyNativeHost */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		A3DE70A2D50883F25A43FEA5 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D6ACAC79569F38D9682266BB /* CapturePreviewView.swift in Sources */,
+				EA1AC9F2A59BE0A0D6136D76 /* CaptureSource.swift in Sources */,
+				3F6DA8272CB5FD3275F7728B /* ChromeCommandStore.swift in Sources */,
+				6A6C21A0D509C4C99E025EE4 /* ChromeIntegrationSettings.swift in Sources */,
+				BCAB0AB2800490C3B043317A /* ContentView.swift in Sources */,
+				D9A100012026110400000001 /* Localization.swift in Sources */,
+				9271D96B879D944A10B6C86D /* PiPContainerView.swift in Sources */,
+				3DF4DC92BB8151E402C18075 /* PiPPanelController.swift in Sources */,
+				F8F639D9126F1FEA731C2B47 /* ScreenStreamSession.swift in Sources */,
+				D0C358F631E4FE35BA4C54D4 /* SourcePickerModel.swift in Sources */,
+				5C5C7DB841B6F4D19A9B350C /* PiplyApp.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A906A5B27F056F79BA7438C3 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1E1F65B3755CEF17E06F9C55 /* main.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXResourcesBuildPhase section */
+		A55E70032026110400000001 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A55E70012026110400000001 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		27C9517DAEE89F8DB293ADC0 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"DEBUG=1",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		6AC4FD5B5DAFA29C2634107E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		6DE23E3BC18D83A5DED96539 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.example.UniversalPiP.NativeHost;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		86882E91FD1257D2077310A1 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = Piply/Piply.entitlements;
+				COMBINE_HIDPI_IMAGES = YES;
+				ENABLE_HARDENED_RUNTIME = YES;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = Piply/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.example.UniversalPiP;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		9AD2344350D31D6F9BAC966F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.example.UniversalPiP.NativeHost;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		AF478A31C5EE5AAC732E094C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = Piply/Piply.entitlements;
+				COMBINE_HIDPI_IMAGES = YES;
+				ENABLE_HARDENED_RUNTIME = YES;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = Piply/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.example.UniversalPiP;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		307E6BDA0ED21174D048C6FA /* Build configuration list for PBXNativeTarget "Piply" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AF478A31C5EE5AAC732E094C /* Debug */,
+				86882E91FD1257D2077310A1 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		4C99FAEAD768ADE3D70B58D5 /* Build configuration list for PBXNativeTarget "PiplyNativeHost" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				6DE23E3BC18D83A5DED96539 /* Debug */,
+				9AD2344350D31D6F9BAC966F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		7AB808E2BC08AE1CFB930BB8 /* Build configuration list for PBXProject "Piply" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				27C9517DAEE89F8DB293ADC0 /* Debug */,
+				6AC4FD5B5DAFA29C2634107E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = E3468CEF05040CA732C2AFAC /* Project object */;
+}

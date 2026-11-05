@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="ja">
+<meta charset="utf-8">
+<title>Piply 動画テスト</title>
+<style>body{margin:0;background:#13223d;color:white;font:24px system-ui;text-align:center}video{width:90vw;max-height:80vh}canvas{display:none}</style>
+<h1>動画のPiP動作確認</h1>
+<video muted autoplay playsinline></video>
+<canvas width="960" height="540"></canvas>
+<script>
+const canvas = document.querySelector('canvas');
+const ctx = canvas.getContext('2d');
+const video = document.querySelector('video');
+let frame = 0;
+function draw() {
+  ctx.fillStyle = '#12365a'; ctx.fillRect(0,0,960,540);
+  ctx.fillStyle = '#32d4a4'; ctx.fillRect((frame * 7) % 880,200,80,80);
+  ctx.fillStyle = 'white'; ctx.font = '42px sans-serif';
+  ctx.fillText('VIDEO FRAME ' + frame++, 40,90);
+  ctx.fillText(new Date().toLocaleTimeString(),40,470);
+}
+draw();
+video.srcObject = canvas.captureStream(15);
+video.play();
+setInterval(draw, 66);
+</script>
+</html>

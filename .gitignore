@@ -1,0 +1,100 @@
+# macOS / Finder metadata
+.DS_Store
+**/.DS_Store
+._*
+
+# Xcode user-specific settings and local paths
+**/xcuserdata/
+*.xcuserstate
+*.xccheckout
+*.xcscmblueprint
+*.pbxuser
+*.mode1v3
+*.mode2v3
+*.perspectivev3
+*.moved-aside
+.xcode.env.local
+
+# Xcode / Swift build products
+DerivedData/
+build/
+.build/
+*.dSYM/
+*.dSYM.zip
+*.ipa
+*.xcarchive/
+*.xcresult/
+*.xccovreport
+*.xccovarchive
+.swiftpm/
+
+# Locally built applications
+# Development signatures may expose the certificate owner's name, email, and Team ID.
+apps/
+*.app/
+
+# Generated extension and release packages
+dist/
+release/
+*.zip
+*.dmg
+*.pkg
+*.crx
+
+# Local recordings, screenshots, and test captures
+output/
+*.mov
+*.mp4
+*.m4v
+*.webm
+
+# Dependencies, coverage, caches, and logs
+node_modules/
+coverage/
+.cache/
+.nyc_output/
+test-results/
+playwright-report/
+*.log
+
+# Environment files and private local settings
+.env
+.env.*
+!.env.example
+.private/
+Private/
+private/
+secrets/
+*.local.xcconfig
+Local.xcconfig
+Secrets.xcconfig
+.npmrc
+.netrc
+.authinfo
+credentials.json
+service-account*.json
+GoogleService-Info.plist
+
+# Certificates, keys, and provisioning profiles
+*.pem
+*.key
+*.p8
+*.p12
+*.cer
+*.crt
+*.csr
+*.der
+*.mobileprovision
+*.provisionprofile
+*.keystore
+*.jks
+
+# Editor and temporary files
+.idea/
+.vscode/
+*.swp
+*.swo
+*.tmp
+*.bak
+*~
+

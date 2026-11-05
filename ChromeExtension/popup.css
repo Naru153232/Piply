@@ -1,0 +1,15 @@
+body { width: 360px; margin: 0; color: #1f2328; font: 13px -apple-system, BlinkMacSystemFont, sans-serif; }
+header { padding: 14px 14px 6px; font-size: 17px; font-weight: 700; }
+#status { margin: 0; padding: 0 14px 10px; color: #667085; }
+#protected-video { margin: 0 10px 10px; padding: 10px; border: 1px solid #d7def0; border-radius: 9px; background: #f6f8ff; }
+#protected-video strong, #protected-video span { display: block; margin-bottom: 6px; }
+#protected-video span { color: #667085; font-size: 12px; }
+#protected-video #browser-pip { border: 0; border-radius: 7px; background: #315efb; color: white; font-weight: 600; text-align: center; }
+#protected-video #browser-pip:hover { background: #244bd1; }
+#tabs { max-height: 430px; overflow-y: auto; border-top: 1px solid #e5e7eb; }
+button { display: block; width: 100%; padding: 10px 14px; overflow: hidden; border: 0; border-bottom: 1px solid #eef0f2; background: white; text-align: left; text-overflow: ellipsis; white-space: nowrap; cursor: pointer; }
+button:hover { background: #f3f6ff; }
+button:disabled { opacity: 0.55; cursor: wait; }
+button[hidden] { display: none; }
+#tabs p { margin: 10px 14px; overflow-wrap: anywhere; }
+

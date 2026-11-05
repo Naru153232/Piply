@@ -1,0 +1,15 @@
+{
+  "manifest_version": 3,
+  "name": "Piply",
+  "version": "0.9.7",
+  "minimum_chrome_version": "116",
+  "description": "Show Chrome tabs or stream a selected video element directly to Piply.",
+  "permissions": ["tabs", "nativeMessaging", "activeTab", "scripting", "contextMenus", "tabCapture", "offscreen"],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_title": "このタブをPiPで表示"
+  }
+}
+

@@ -1,0 +1,33 @@
+name: Piply
+options:
+  bundleIdPrefix: com.example
+  deploymentTarget:
+    macOS: "14.0"
+settings:
+  base:
+    SWIFT_VERSION: "5.0"
+targets:
+  Piply:
+    type: application
+    platform: macOS
+    sources:
+      - path: Piply
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.example.UniversalPiP
+        GENERATE_INFOPLIST_FILE: NO
+        INFOPLIST_FILE: Piply/Info.plist
+        CODE_SIGN_ENTITLEMENTS: Piply/Piply.entitlements
+        ENABLE_HARDENED_RUNTIME: YES
+    entitlements:
+      path: Piply/Piply.entitlements
+      
+  PiplyNativeHost:
+    type: tool
+    platform: macOS
+    sources:
+      - path: NativeHost
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.example.UniversalPiP.NativeHost
+
