@@ -326,6 +326,14 @@ private struct AppSettingsView: View {
                     Text(errorMessage).font(.callout).foregroundStyle(.red)
                 }
                 }
+
+                SettingsCard(title: L10n.text("アプリ情報", "About"), systemImage: "info.circle") {
+                    SettingsRow(title: L10n.text("バージョン", "Version")) {
+                        Text(appVersionDescription)
+                            .foregroundStyle(.secondary)
+                            .textSelection(.enabled)
+                    }
+                }
             }
             .padding(.horizontal, 16)
             .padding(.top, 14)
@@ -347,6 +355,10 @@ private struct AppSettingsView: View {
         if model.chromeConnected { return L10n.text("Chrome 拡張機能と接続済み", "Connected to Chrome Extension") }
         if model.chromeIntegrationInstalled { return L10n.text("ID設定済み・接続待ち", "ID Saved — Waiting for Connection") }
         return L10n.text("未設定", "Not Configured")
+    }
+
+    private var appVersionDescription: String {
+        Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "-"
     }
 
     private func updateLoginItem(enabled: Bool) {
