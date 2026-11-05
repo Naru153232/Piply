@@ -3,6 +3,12 @@ import Carbon.HIToolbox
 import SwiftUI
 import ServiceManagement
 
+enum AppVersion {
+    static var current: String {
+        Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "-"
+    }
+}
+
 final class AppDelegate: NSObject, NSApplicationDelegate {
     // Keep the closed window available for Dock/reopen requests without
     // creating another scene or interrupting the Chrome bridge.
@@ -358,7 +364,7 @@ private struct AppSettingsView: View {
     }
 
     private var appVersionDescription: String {
-        Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "-"
+        AppVersion.current
     }
 
     private func updateLoginItem(enabled: Bool) {

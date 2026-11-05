@@ -289,9 +289,9 @@ final class SourcePickerModel: ObservableObject {
             if !chromeTabs.isEmpty { chromeTabs = [] }
             return
         }
-        let connectionChanged = !chromeConnected || chromeExtensionNeedsReload != (state.extensionVersion != "0.9.7")
+        let connectionChanged = !chromeConnected || chromeExtensionNeedsReload != (state.extensionVersion != AppVersion.current)
         if !chromeConnected { chromeConnected = true }
-        let needsReload = state.extensionVersion != "0.9.7"
+        let needsReload = state.extensionVersion != AppVersion.current
         if chromeExtensionNeedsReload != needsReload { chromeExtensionNeedsReload = needsReload }
         let updatedTabs = state.tabs.sorted { $0.title.localizedCaseInsensitiveCompare($1.title) == .orderedAscending }
         if chromeTabs != updatedTabs {

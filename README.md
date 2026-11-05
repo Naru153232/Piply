@@ -11,6 +11,20 @@ Piplyは、Macで開いているアプリのウィンドウやChromeのタブを
 
 Chrome拡張機能の開発用コードは、役割ごとに `ChromeExtension` 内の複数のJavaScriptファイルへ分けています。配布版は次のコマンドで作成できます。
 
+通常のビルドではバージョンは変わりません。新しいリリースのバージョンは、次のコマンドを実行した時だけ更新されます。
+
+```sh
+# パッチ更新（例: 0.9.7 → 0.9.8）
+node scripts/bump-version.mjs
+
+# minor / major更新、またはバージョンの直接指定
+node scripts/bump-version.mjs minor
+node scripts/bump-version.mjs major
+node scripts/bump-version.mjs 1.2.0
+```
+
+このコマンドはアプリとChrome拡張機能を同じバージョンへ更新します。現在のバージョンは `VERSION` ファイルで確認できます。
+
 ```sh
 node scripts/build-chrome-extension.mjs
 ```
