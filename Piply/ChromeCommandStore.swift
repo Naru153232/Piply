@@ -40,8 +40,15 @@ struct ChromeState: Codable {
 
 enum ChromeCommandStore {
     static var directory: URL {
-        FileManager.default.homeDirectoryForCurrentUser
-            .appendingPathComponent("Library/Application Support/UniversalPiP", isDirectory: true)
+        let applicationSupport = FileManager.default.homeDirectoryForCurrentUser
+            .appendingPathComponent("Library/Application Support", isDirectory: true)
+        let directory = applicationSupport.appendingPathComponent("Piply", isDirectory: true)
+        let legacyDirectory = applicationSupport.appendingPathComponent("UniversalPiP", isDirectory: true)
+        if !FileManager.default.fileExists(atPath: directory.path),
+           FileManager.default.fileExists(atPath: legacyDirectory.path) {
+            try? FileManager.default.moveItem(at: legacyDirectory, to: directory)
+        }
+        return directory
     }
 
     static var file: URL { directory.appendingPathComponent("chrome-command.json") }

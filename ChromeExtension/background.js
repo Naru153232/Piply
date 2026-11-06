@@ -38,7 +38,7 @@ async function showPiPResult(result) {
 
 function connect() {
   if (port) return;
-  port = chrome.runtime.connectNative('com.example.universal_pip');
+  port = chrome.runtime.connectNative('com.naru.piply');
   port.onMessage.addListener(response => {
     if (response?.command) enqueueCommand(response.command);
     if (response?.ok === false && captureSessions.has(response.requestId)) {

@@ -9,6 +9,22 @@ enum AppVersion {
     }
 }
 
+private enum PiplyMigration {
+    private static let legacyBundleIdentifier = "com.example.UniversalPiP"
+    private static let migrationKey = "didMigrateFromUniversalPiP"
+
+    static func run() {
+        let defaults = UserDefaults.standard
+        guard !defaults.bool(forKey: migrationKey) else { return }
+        if let legacyDefaults = defaults.persistentDomain(forName: legacyBundleIdentifier) {
+            for (key, value) in legacyDefaults where defaults.object(forKey: key) == nil {
+                defaults.set(value, forKey: key)
+            }
+        }
+        defaults.set(true, forKey: migrationKey)
+    }
+}
+
 final class AppDelegate: NSObject, NSApplicationDelegate {
     // Keep the closed window available for Dock/reopen requests without
     // creating another scene or interrupting the Chrome bridge.
@@ -22,7 +38,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     private func requestExistingWindowRefresh() {
         DistributedNotificationCenter.default().postNotificationName(
-            .universalPiPActivateExisting,
+            .piplyActivateExisting,
             object: nil,
             userInfo: nil,
             deliverImmediately: true
@@ -44,6 +60,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     func applicationWillFinishLaunching(_ notification: Notification) {
+        PiplyMigration.run()
         guard let existing = olderRunningInstance() else { return }
         duplicateInstance = existing
         requestExistingWindowRefresh()
@@ -66,7 +83,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         focusedWindowHotKey = GlobalHotKey(keyCode: UInt32(kVK_ANSI_P), modifiers: UInt32(cmdKey | shiftKey)) {
             let pid = NSWorkspace.shared.frontmostApplication?.processIdentifier
             NotificationCenter.default.post(
-                name: .universalPiPCaptureFocusedApplication,
+                name: .piplyCaptureFocusedApplication,
                 object: nil,
                 userInfo: pid.map { ["processID": $0] }
             )

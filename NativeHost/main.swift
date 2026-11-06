@@ -1,8 +1,14 @@
 import Foundation
 import AppKit
 
-let directory = FileManager.default.homeDirectoryForCurrentUser
-    .appendingPathComponent("Library/Application Support/UniversalPiP", isDirectory: true)
+let applicationSupport = FileManager.default.homeDirectoryForCurrentUser
+    .appendingPathComponent("Library/Application Support", isDirectory: true)
+let directory = applicationSupport.appendingPathComponent("Piply", isDirectory: true)
+let legacyDirectory = applicationSupport.appendingPathComponent("UniversalPiP", isDirectory: true)
+if !FileManager.default.fileExists(atPath: directory.path),
+   FileManager.default.fileExists(atPath: legacyDirectory.path) {
+    try? FileManager.default.moveItem(at: legacyDirectory, to: directory)
+}
 let input = FileHandle.standardInput
 let output = FileHandle.standardOutput
 
@@ -37,7 +43,7 @@ func writeJSON(_ object: [String: Any], to name: String) throws {
 }
 
 func launchPiPIfNeeded() throws {
-    let identifier = "com.example.UniversalPiP"
+    let identifier = "com.naru.piply"
     if NSRunningApplication.runningApplications(withBundleIdentifier: identifier)
         .contains(where: { !$0.isTerminated }) { return }
     // Launch the app containing this registered helper, not another build
@@ -45,7 +51,7 @@ func launchPiPIfNeeded() throws {
     let executable = URL(fileURLWithPath: CommandLine.arguments[0]).resolvingSymlinksInPath()
     let app = executable.deletingLastPathComponent().deletingLastPathComponent().deletingLastPathComponent()
     guard app.pathExtension == "app", Bundle(url: app)?.bundleIdentifier == identifier else {
-        throw NSError(domain: "UniversalPiP", code: 1, userInfo: [
+        throw NSError(domain: "com.naru.piply", code: 1, userInfo: [
             NSLocalizedDescriptionKey: "アプリが見つかりません。PiplyでChrome連携を設定し直してください。"
         ])
     }
@@ -58,7 +64,7 @@ func launchPiPIfNeeded() throws {
     try launcher.run()
     launcher.waitUntilExit()
     if launcher.terminationStatus != 0 {
-        throw NSError(domain: "UniversalPiP", code: 2, userInfo: [NSLocalizedDescriptionKey: "Piplyを起動できませんでした。"])
+        throw NSError(domain: "com.naru.piply", code: 2, userInfo: [NSLocalizedDescriptionKey: "Piplyを起動できませんでした。"])
     }
 }
 
@@ -73,7 +79,7 @@ while let message = readMessage() {
                 "tabs": message["tabs"] as? [[String: Any]] ?? []
             ], to: "chrome-state.json")
             DistributedNotificationCenter.default().postNotificationName(
-                Notification.Name("com.example.UniversalPiP.ChromeState"), object: nil, userInfo: nil, deliverImmediately: true
+                Notification.Name("com.naru.piply.ChromeState"), object: nil, userInfo: nil, deliverImmediately: true
             )
         case "streamOffer", "captureTabError", "captureTabNeedsPermission", "videoWaiting", "selectPiPTab", "tabCaptureStopped", "sourceTabClosed":
             try FileManager.default.createDirectory(at: directory.appendingPathComponent("commands"), withIntermediateDirectories: true)
@@ -83,7 +89,7 @@ while let message = readMessage() {
             // even if its notification observer is not installed yet.
             if action == "streamOffer" { try launchPiPIfNeeded() }
             DistributedNotificationCenter.default().postNotificationName(
-                Notification.Name("com.example.UniversalPiP.ChromeCommand"), object: nil, userInfo: nil, deliverImmediately: true
+                Notification.Name("com.naru.piply.ChromeCommand"), object: nil, userInfo: nil, deliverImmediately: true
             )
         default:
             break

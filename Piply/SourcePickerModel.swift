@@ -60,21 +60,21 @@ final class SourcePickerModel: ObservableObject {
             }
         }
         chromeObserver = DistributedNotificationCenter.default().addObserver(
-            forName: .universalPiPChromeCommand,
+            forName: .piplyChromeCommand,
             object: nil,
             queue: .main
         ) { [weak self] _ in
             Task { @MainActor in await self?.handleChromeCommand() }
         }
         chromeStateObserver = DistributedNotificationCenter.default().addObserver(
-            forName: .universalPiPChromeState,
+            forName: .piplyChromeState,
             object: nil,
             queue: .main
         ) { [weak self] _ in
             Task { @MainActor in self?.loadChromeState() }
         }
         activateObserver = DistributedNotificationCenter.default().addObserver(
-            forName: .universalPiPActivateExisting,
+            forName: .piplyActivateExisting,
             object: nil,
             queue: .main
         ) { [weak self] _ in
@@ -85,7 +85,7 @@ final class SourcePickerModel: ObservableObject {
             }
         }
         focusedApplicationObserver = NotificationCenter.default.addObserver(
-            forName: .universalPiPCaptureFocusedApplication,
+            forName: .piplyCaptureFocusedApplication,
             object: nil,
             queue: .main
         ) { [weak self] notification in
@@ -772,10 +772,10 @@ final class SourcePickerModel: ObservableObject {
 }
 
 extension Notification.Name {
-    static let universalPiPCaptureFocusedApplication = Notification.Name("com.example.UniversalPiP.CaptureFocusedApplication")
-    static let universalPiPChromeCommand = Notification.Name("com.example.UniversalPiP.ChromeCommand")
-    static let universalPiPChromeState = Notification.Name("com.example.UniversalPiP.ChromeState")
-    static let universalPiPChromeFrame = Notification.Name("com.example.UniversalPiP.ChromeFrame")
-    static let universalPiPActivateExisting = Notification.Name("com.example.UniversalPiP.ActivateExisting")
+    static let piplyCaptureFocusedApplication = Notification.Name("com.naru.piply.CaptureFocusedApplication")
+    static let piplyChromeCommand = Notification.Name("com.naru.piply.ChromeCommand")
+    static let piplyChromeState = Notification.Name("com.naru.piply.ChromeState")
+    static let piplyChromeFrame = Notification.Name("com.naru.piply.ChromeFrame")
+    static let piplyActivateExisting = Notification.Name("com.naru.piply.ActivateExisting")
 }
 

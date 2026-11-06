@@ -2,7 +2,7 @@ import AppKit
 import SwiftUI
 
 private extension NSPasteboard.PasteboardType {
-    static let pipTab = NSPasteboard.PasteboardType("com.piply.pip-tab")
+    static let pipTab = NSPasteboard.PasteboardType("com.naru.piply.pip-tab")
 }
 
 // Xcode Canvasのプレビューを見ながら、この値を編集すると実際のPiPにも反映されます。

@@ -16,7 +16,8 @@ enum ChromeIntegrationError: LocalizedError {
 
 enum ChromeIntegrationSettings {
     static let extensionIDKey = "chromeExtensionID"
-    static let hostName = "com.example.universal_pip"
+    static let hostName = "com.naru.piply"
+    private static let legacyHostName = "com.example.universal_pip"
 
     static var extensionID: String {
         get { UserDefaults.standard.string(forKey: extensionIDKey) ?? "" }
@@ -27,6 +28,10 @@ enum ChromeIntegrationSettings {
         FileManager.default.homeDirectoryForCurrentUser
             .appendingPathComponent("Library/Application Support/Google/Chrome/NativeMessagingHosts", isDirectory: true)
             .appendingPathComponent("\(hostName).json")
+    }
+
+    private static var legacyManifestURL: URL {
+        manifestURL.deletingLastPathComponent().appendingPathComponent("\(legacyHostName).json")
     }
 
     static var isInstalled: Bool {
@@ -67,6 +72,7 @@ enum ChromeIntegrationSettings {
         let directory = manifestURL.deletingLastPathComponent()
         try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
         try data.write(to: manifestURL, options: .atomic)
+        try? FileManager.default.removeItem(at: legacyManifestURL)
         self.extensionID = extensionID
     }
 }

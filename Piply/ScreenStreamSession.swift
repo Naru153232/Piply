@@ -4,7 +4,7 @@ import ScreenCaptureKit
 final class ScreenStreamSession: NSObject, SCStreamOutput {
     private let window: SCWindow
     private weak var preview: CapturePreviewView?
-    private let outputQueue = DispatchQueue(label: "com.example.UniversalPiP.video", qos: .userInteractive)
+    private let outputQueue = DispatchQueue(label: "com.naru.piply.video", qos: .userInteractive)
     private var stream: SCStream?
 
     init(window: SCWindow, preview: CapturePreviewView) {

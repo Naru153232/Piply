@@ -329,7 +329,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.example.UniversalPiP.NativeHost;
+				PRODUCT_BUNDLE_IDENTIFIER = com.naru.piply.nativehost;
 				SDKROOT = macosx;
 			};
 			name = Debug;
@@ -347,7 +347,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.example.UniversalPiP;
+				PRODUCT_BUNDLE_IDENTIFIER = com.naru.piply;
 				SDKROOT = macosx;
 			};
 			name = Release;
@@ -360,7 +360,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.example.UniversalPiP.NativeHost;
+				PRODUCT_BUNDLE_IDENTIFIER = com.naru.piply.nativehost;
 				SDKROOT = macosx;
 			};
 			name = Release;
@@ -378,7 +378,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.example.UniversalPiP;
+				PRODUCT_BUNDLE_IDENTIFIER = com.naru.piply;
 				SDKROOT = macosx;
 			};
 			name = Debug;

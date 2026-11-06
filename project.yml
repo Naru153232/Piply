@@ -1,6 +1,6 @@
 name: Piply
 options:
-  bundleIdPrefix: com.example
+  bundleIdPrefix: com.naru
   deploymentTarget:
     macOS: "14.0"
 settings:
@@ -15,7 +15,7 @@ targets:
       - path: Piply
     settings:
       base:
-        PRODUCT_BUNDLE_IDENTIFIER: com.example.UniversalPiP
+        PRODUCT_BUNDLE_IDENTIFIER: com.naru.piply
         GENERATE_INFOPLIST_FILE: NO
         INFOPLIST_FILE: Piply/Info.plist
         CODE_SIGN_ENTITLEMENTS: Piply/Piply.entitlements
@@ -30,5 +30,5 @@ targets:
       - path: NativeHost
     settings:
       base:
-        PRODUCT_BUNDLE_IDENTIFIER: com.example.UniversalPiP.NativeHost
+        PRODUCT_BUNDLE_IDENTIFIER: com.naru.piply.nativehost
 

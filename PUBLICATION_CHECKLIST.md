@@ -30,7 +30,7 @@
 
 ## 一般公開前に別途決めること
 
-- 現在のBundle IDとNative Messaging Host名は `com.example` です。正式公開時は、所有している一意の識別子へ関連箇所をまとめて変更してください。
+- Bundle IDは `com.naru.piply`、Native Messaging Host名も `com.naru.piply` に統一されています。
 - ソースを第三者に利用・改変してもらう場合は、LICENSEファイルと採用ライセンスを決めてください。
 - macOSのGatekeeper警告を避けるには、配布者のDeveloper IDによる署名とAppleの公証が必要です。この場合、署名には配布者情報が含まれることを理解したうえで行ってください。
 

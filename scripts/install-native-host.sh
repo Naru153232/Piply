@@ -14,15 +14,17 @@ fi
 
 xcodebuild -project "$ROOT_DIR/Piply.xcodeproj" -scheme PiplyNativeHost -configuration Release -derivedDataPath "$BUILD_DIR" build
 mkdir -p "$HOST_DIR"
-cat > "$HOST_DIR/com.example.universal_pip.json" <<JSON
+cat > "$HOST_DIR/com.naru.piply.json" <<JSON
 {
-  "name": "com.example.universal_pip",
+  "name": "com.naru.piply",
   "description": "Piply native bridge",
   "path": "$HOST_BINARY",
   "type": "stdio",
   "allowed_origins": ["chrome-extension://$EXTENSION_ID/"]
 }
 JSON
+
+rm -f "$HOST_DIR/com.example.universal_pip.json"
 
 echo "Installed native host for extension $EXTENSION_ID"
 

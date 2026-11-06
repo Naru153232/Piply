@@ -2,8 +2,8 @@
 // The video element's media output is sent directly to the native receiver.
 // No tabCapture, canvas, DOM cropping, page messaging, or audio forwarding.
 (() => {
-  if (globalThis.__universalPiPVideoSenderInstalled) return;
-  globalThis.__universalPiPVideoSenderInstalled = true;
+  if (globalThis.__piplyVideoSenderInstalled) return;
+  globalThis.__piplyVideoSenderInstalled = true;
   const sessions = new Map();
 
   function notify(session, action, extra = {}) {
