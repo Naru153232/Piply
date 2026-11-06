@@ -23,7 +23,7 @@ node scripts/bump-version.mjs major
 node scripts/bump-version.mjs 1.2.0
 ```
 
-Finderから実行する場合は、`update-version.command` をダブルクリックします。確認後、パッチバージョンを1つ繰り上げます。`build.command` はビルドのみを行い、バージョンを変更しません。
+Finderから実行する場合は、`update-version.command` をダブルクリックします。確認後、パッチバージョンを1つ繰り上げます。`build.command` はバージョンを変更せず、アプリのビルドと配布用ZIPの作成を続けて行います。
 
 このコマンドはアプリとChrome拡張機能を同じバージョンへ更新します。現在のバージョンは `VERSION` ファイルで確認できます。
 
@@ -33,7 +33,7 @@ node scripts/build-chrome-extension.mjs
 
 生成先は `dist/ChromeExtension` です。配布版ではJavaScriptが `piply.js` の1ファイルにまとめられ、そのフォルダをChromeの「パッケージ化されていない拡張機能を読み込む」でそのまま選べます。
 
-アプリとChrome拡張機能をまとめた配布用ZIPは、アプリをビルドした後に次のコマンドで作成できます。
+アプリとChrome拡張機能をまとめた配布用ZIPは、`build.command`をダブルクリックするか、アプリをビルドした後に次のコマンドで作成できます。
 
 ```sh
 ./scripts/package-release.sh

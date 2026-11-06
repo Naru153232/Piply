@@ -153,7 +153,7 @@ final class ChromeStreamView: WKWebView, WKNavigationDelegate, WKScriptMessageHa
         super.init(frame: .zero, configuration: configuration)
         navigationDelegate = self
         configuration.userContentController.add(self, name: "pip")
-        loadHTMLString(Self.receiverHTML, baseURL: URL(string: "https://universal-pip.invalid"))
+        loadHTMLString(Self.receiverHTML, baseURL: URL(string: "https://piply.invalid"))
     }
 
     required init?(coder: NSCoder) { nil }

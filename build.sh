@@ -6,7 +6,7 @@ DERIVED_DIR="$ROOT_DIR/build"
 OUTPUT_DIR="$ROOT_DIR/apps"
 BUILT_APP_NAME="Piply.app"
 APP_NAME="Piply.app"
-SIGNING_IDENTITY="${UNIVERSAL_PIP_SIGNING_IDENTITY:-}"
+SIGNING_IDENTITY="${PIPLY_SIGNING_IDENTITY:-}"
 
 if [[ -z "$SIGNING_IDENTITY" ]]; then
   SIGNING_IDENTITY="$(security find-identity -v -p codesigning | awk '/Apple Development/ { print $2; exit }')"
@@ -14,7 +14,7 @@ fi
 
 if [[ -z "$SIGNING_IDENTITY" ]]; then
   print -u2 "Apple Development署名が見つかりません。画面収録の許可をビルド間で維持するには署名証明書が必要です。"
-  print -u2 "UNIVERSAL_PIP_SIGNING_IDENTITY に署名IDを指定してください。"
+  print -u2 "PIPLY_SIGNING_IDENTITY に署名IDを指定してください。"
   exit 1
 fi
 

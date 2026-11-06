@@ -22,9 +22,10 @@
 
 ## 配布物の作成
 
-1. `./build.sh` でアプリをビルドします。
-2. `./scripts/package-release.sh` を実行します。
-3. `release/Piply-<version>.zip` を配布します。
+1. `build.command` をダブルクリックします（アプリのビルドと配布用ZIPの作成が連続して実行されます）。
+2. `release/Piply-<version>.zip` を配布します。
+
+ターミナルから個別に実行する場合は、`./build.sh` の後に `./scripts/package-release.sh` を実行します。
 
 配布スクリプトは、配布コピーから開発者署名とローカルパスを含むデバッグ情報を削除し、個人情報を含まないアドホック署名を付けます。元の `apps/Piply.app` は変更しません。
 

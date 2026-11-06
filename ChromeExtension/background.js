@@ -4,8 +4,8 @@ let tabsTimer;
 const captureSessions = new Map();
 const permissionIntents = new Map();
 let commandQueue = Promise.resolve();
-const VIDEO_PIP_MENU_ID = 'universal-pip-video';
-const VIDEO_PIP_ADD_MENU_ID = 'universal-pip-video-add';
+const VIDEO_PIP_MENU_ID = 'piply-video';
+const VIDEO_PIP_ADD_MENU_ID = 'piply-video-add';
 
 async function installVideoContextMenu() {
   await chrome.contextMenus.removeAll();
