@@ -356,7 +356,8 @@ private final class PiPSoftShadow {
         // The explicit shadowPath casts the shadow without an opaque backing
         // rectangle that could peek out while the owner shrinks.
         shadowLayer.backgroundColor = NSColor.clear.cgColor
-        shadowLayer.cornerRadius = 0
+        shadowLayer.cornerRadius = PiPContainerView.cornerRadius
+        shadowLayer.cornerCurve = .continuous
         shadowLayer.shadowColor = NSColor.black.cgColor
         shadowLayer.shadowOpacity = 0.14
         shadowLayer.shadowRadius = 10

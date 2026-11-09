@@ -73,6 +73,7 @@ struct PiPTabItem {
 }
 
 final class PiPContainerView: NSView {
+    static let cornerRadius: CGFloat = 6
     private static let tabHeaderHeight: CGFloat = 28
     static let tabDropOffset: CGFloat = 14
     private static let mediaButtonSize: CGFloat = 52
@@ -154,7 +155,8 @@ final class PiPContainerView: NSView {
         layer?.backgroundColor = NSColor.clear.cgColor
         layer?.borderColor = NSColor.white.withAlphaComponent(0.16).cgColor
         layer?.borderWidth = 0
-        layer?.cornerRadius = 0
+        layer?.cornerRadius = Self.cornerRadius
+        layer?.cornerCurve = .continuous
         layer?.masksToBounds = true
 
         preview.wantsLayer = true
