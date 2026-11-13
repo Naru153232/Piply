@@ -65,7 +65,7 @@ function connect() {
       videoWaiting(session);
     }
   }
-  pollTimer = setInterval(() => send({ action: 'poll' }), 100);
+  pollTimer = setInterval(() => send({ action: 'poll' }), 250);
   tabsTimer = setInterval(publishTabs, 3000);
 }
 
@@ -88,13 +88,14 @@ function enqueueCommand(command) {
     const captureSession = captureSessions.get(command.requestId);
     if (command.action === 'restartVideo' && captureSession?.videoTarget &&
         captureSession.tabId === command.tabId && captureSession.streamId === command.streamId) {
+      if (captureSession.captureMode === 'offscreen') return restartCroppedTabCapture(captureSession);
       return chrome.tabs.sendMessage(captureSession.tabId,
         { target: 'video-element', action: 'stop', requestId: command.requestId },
         { documentId: captureSession.documentId }).catch(() => {});
     }
     if (command.action === 'streamAnswer'  && captureSession?.tabId === command.tabId) {
       if (captureSession.videoTarget && command.streamId !== captureSession.streamId) return;
-      if (captureSession.videoTarget) return chrome.tabs.sendMessage(captureSession.tabId,
+      if (captureSession.videoTarget && captureSession.captureMode !== 'offscreen') return chrome.tabs.sendMessage(captureSession.tabId,
         { target: 'video-element', action: 'answer', requestId: command.requestId, sdp: command.sdp, streamId: command.streamId },
         { documentId: captureSession.documentId });
       return chrome.runtime.sendMessage({ ...command, target: 'offscreen', action: 'answer' });
@@ -210,6 +211,55 @@ async function attachVideoSender(session, onlyIfNewFrame = false) {
   }
   session.videoTarget.sourceURL = '';
   if (!response?.ok) throw new Error(response?.error || '動画の再接続を待っています。');
+  if (response.fallback && response.geometry) {
+    await startCroppedTabCapture(session, response.geometry);
+  } else {
+    session.captureMode = 'element';
+  }
+}
+
+async function startCroppedTabCapture(session, geometry) {
+  if (captureSessions.get(session.requestId) !== session) return;
+  session.captureMode = 'offscreen';
+  session.geometry = geometry;
+  session.viewport = {
+    width: geometry.viewportWidth,
+    height: geometry.viewportHeight,
+    pixelRatio: geometry.pixelRatio || 1
+  };
+  session.crop = {
+    x: geometry.x, y: geometry.y,
+    width: geometry.width, height: geometry.height
+  };
+  session.streamId = crypto.randomUUID();
+  await ensureOffscreenDocument();
+  let mediaStreamId;
+  try {
+    mediaStreamId = await chrome.tabCapture.getMediaStreamId({ targetTabId: session.tabId });
+  } catch (error) {
+    throw new Error(`動画領域の取得を開始できませんでした。Chrome: ${error?.message || String(error)}`);
+  }
+  if (captureSessions.get(session.requestId) !== session) return;
+  clearTimeout(session.timeout);
+  session.timeout = setTimeout(() => {
+    if (captureSessions.get(session.requestId) !== session || session.hasFrame) return;
+    reportCaptureError(session, '動画領域から画像が届きませんでした。取得を停止します。');
+    enqueueCommand({ action: 'stopTabCapture', requestId: session.requestId });
+  }, 25000);
+  const response = await chrome.runtime.sendMessage({
+    target: 'offscreen', action: 'start', streamId: mediaStreamId,
+    tabId: session.tabId, requestId: session.requestId,
+    viewport: session.viewport, crop: session.crop, videoState: geometry.video,
+    videoElement: true, connectionId: session.streamId
+  });
+  if (!response?.ok) throw new Error('動画領域の受信ページを開始できませんでした。');
+}
+
+async function restartCroppedTabCapture(session) {
+  if (captureSessions.get(session.requestId) !== session || !session.geometry) return;
+  await chrome.runtime.sendMessage({ target: 'offscreen', action: 'stop', requestId: session.requestId }).catch(() => {});
+  session.hasFrame = false;
+  return startCroppedTabCapture(session, session.geometry);
 }
 
 async function watchVideoTab(session) {
@@ -302,7 +352,7 @@ async function captureTab(tabId, requestId = crypto.randomUUID(), allowFocusForP
       viewport: session.viewport
     });
     if (!response?.ok) throw new Error('タブ映像の受信ページを開始できませんでした。');
-    session.sizeTimer = setTimeout(() => updateViewport(session), 250);
+    session.sizeTimer = setTimeout(() => updateViewport(session), 1500);
     return { ok: true, requestId };
   } catch (error) {
     const reason = error?.message || String(error);
@@ -340,7 +390,7 @@ async function updateViewport(session) {
       });
     }
   } catch (_) { /* Tab closure is handled by onRemoved / the media track. */ }
-  if (captureSessions.get(session.requestId) === session) session.sizeTimer = setTimeout(() => updateViewport(session), 250);
+  if (captureSessions.get(session.requestId) === session) session.sizeTimer = setTimeout(() => updateViewport(session), 1500);
 }
 
 async function stopTabCapture(requestedTabId, requestId) {
@@ -358,15 +408,18 @@ async function stopTabCapture(requestedTabId, requestId) {
   clearTimeout(session.timeout);
   clearTimeout(session.sizeTimer);
   clearTimeout(session.videoTimer);
-  try {
-    if (session.videoTarget && session.documentId) {
+  if (session.videoTarget && session.documentId) {
+    try {
       await chrome.tabs.sendMessage(session.tabId,
         { target: 'video-element', action: 'stop', requestId: session.requestId },
         { documentId: session.documentId });
-    } else if (!session.videoTarget) {
+    } catch (_) {}
+  }
+  if (!session.videoTarget || session.captureMode === 'offscreen') {
+    try {
       await chrome.runtime.sendMessage({ target: 'offscreen', action: 'stop', requestId: session.requestId });
-    }
-  } catch (_) {}
+    } catch (_) {}
+  }
   send(captureMessage(session, 'tabCaptureStopped'));
 }
 
@@ -384,17 +437,51 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         streamId: message.streamId, videoElement: true
       }));
     }
+    if (message.action === 'geometry' && message.geometry) {
+      session.geometry = message.geometry;
+      if (session.captureMode === 'offscreen') {
+        session.viewport = {
+          width: message.geometry.viewportWidth, height: message.geometry.viewportHeight,
+          pixelRatio: message.geometry.pixelRatio || 1
+        };
+        session.crop = {
+          x: message.geometry.x, y: message.geometry.y,
+          width: message.geometry.width, height: message.geometry.height
+        };
+        chrome.runtime.sendMessage({ target: 'offscreen', action: 'geometry',
+          tabId: session.tabId, requestId: session.requestId,
+          viewport: session.viewport, crop: session.crop, videoState: message.geometry.video }).catch(() => {});
+      }
+    }
+    if (message.action === 'availability' && session.captureMode === 'offscreen') {
+      chrome.runtime.sendMessage({ target: 'offscreen', action: 'availability',
+        tabId: session.tabId, requestId: session.requestId,
+        available: message.available === true }).catch(() => {});
+    }
     if (message.streamId && session.streamId && message.streamId !== session.streamId) return;
     if (message.action === 'ready') streamReady(session);
-    if (message.action === 'availability' && !message.available || message.action === 'waiting')
+    if ((message.action === 'availability' && !message.available) || message.action === 'waiting')
       videoWaiting(session, message.error);
+    return;
+  }
+  if (message.source === 'offscreen' && message.action === 'videoControl') {
+    const session = captureSessions.get(message.requestId);
+    if (!session?.videoTarget || session.captureMode !== 'offscreen' || !session.documentId) return;
+    chrome.tabs.sendMessage(session.tabId, {
+      target: 'video-element', action: 'control', requestId: session.requestId,
+      command: message.command, time: message.time
+    }, { documentId: session.documentId }).catch(() => {});
     return;
   }
   if (sender.url === chrome.runtime.getURL('offscreen.html')) {
     const session = captureSessions.get(message.requestId);
-    if (!session || session.videoTarget || message.requestId !== session.requestId || message.tabId !== session.tabId) return;
+    if (!session || (session.videoTarget && session.captureMode !== 'offscreen') ||
+        message.requestId !== session.requestId || message.tabId !== session.tabId) return;
     if (message.action === 'offer') send(captureMessage(session, 'streamOffer', {
-      sdp: message.sdp, viewportWidth: session.viewport.width, viewportHeight: session.viewport.height
+      sdp: message.sdp,
+      viewportWidth: session.crop?.width || session.viewport.width,
+      viewportHeight: session.crop?.height || session.viewport.height,
+      streamId: session.streamId, videoElement: Boolean(session.videoTarget)
     }));
     if (message.action === 'ready') streamReady(session);
     if (message.action === 'error') {

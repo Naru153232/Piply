@@ -4,6 +4,7 @@ import ScreenCaptureKit
 import WebKit
 
 final class CapturePreviewView: NSView {
+    private let cropLayer = CALayer()
     private let displayLayer = AVSampleBufferDisplayLayer()
     private var sourceSize = CGSize(width: 1, height: 1)
     private var cropRect: CGRect?
@@ -14,7 +15,9 @@ final class CapturePreviewView: NSView {
         super.init(frame: frameRect)
         wantsLayer = true
         layer?.masksToBounds = true
-        layer?.addSublayer(displayLayer)
+        cropLayer.masksToBounds = true
+        layer?.addSublayer(cropLayer)
+        cropLayer.addSublayer(displayLayer)
         displayLayer.videoGravity = .resize
         displayLayer.backgroundColor = NSColor.black.cgColor
 
@@ -57,16 +60,25 @@ final class CapturePreviewView: NSView {
         defer { CATransaction.commit() }
         let crop = cropRect ?? CGRect(origin: .zero, size: sourceSize)
         guard crop.width > 0, crop.height > 0 else {
-            displayLayer.frame = bounds
+            cropLayer.frame = bounds
+            displayLayer.frame = cropLayer.bounds
             return
         }
-        // Uniform scaling also prevents a transient stretch before the window
-        // receives the first source-size update.
-        let scale = max(bounds.width / crop.width, bounds.height / crop.height)
+        // Fit the complete source inside the PiP instead of filling the PiP by
+        // cutting off an edge when the two aspect ratios differ slightly.
+        // The intermediate layer still clips intentional crops (for example,
+        // a Chrome viewport) without exposing pixels outside the crop.
+        let scale = min(bounds.width / crop.width, bounds.height / crop.height)
         let bottomInset = max(sourceSize.height - crop.maxY, 0)
+        cropLayer.frame = CGRect(
+            x: (bounds.width - crop.width * scale) / 2,
+            y: (bounds.height - crop.height * scale) / 2,
+            width: crop.width * scale,
+            height: crop.height * scale
+        )
         displayLayer.frame = CGRect(
-            x: (bounds.width - crop.width * scale) / 2 - crop.minX * scale,
-            y: (bounds.height - crop.height * scale) / 2 - bottomInset * scale,
+            x: -crop.minX * scale,
+            y: -bottomInset * scale,
             width: sourceSize.width * scale,
             height: sourceSize.height * scale
         )
@@ -245,7 +257,7 @@ final class ChromeStreamView: WKWebView, WKNavigationDelegate, WKScriptMessageHa
     </head><body><video id="video" autoplay muted playsinline></video><script>
     const video = document.getElementById('video');
     let peer, channel, viewport, ready = false, closed = false, lastSize = '', disconnectTimer;
-    let displayTimer, statsTimer, lastDisplay = '', previousStats;
+    let displayTimer, displayHeartbeat, lastDisplay = '';
     let presentationActive = true;
     let mediaAvailable = true;
     function setPresentationActive(active) {
@@ -267,16 +279,24 @@ final class ChromeStreamView: WKWebView, WKNavigationDelegate, WKScriptMessageHa
     }
     function fit() {
       if (!video.videoWidth || !video.videoHeight) return;
-      const w = viewport?.width || video.videoWidth, h = viewport?.height || video.videoHeight;
-      const cropScale = Math.min(video.videoWidth / w, video.videoHeight / h);
-      const scale = Math.max(innerWidth / (w * cropScale), innerHeight / (h * cropScale));
-      video.style.transform = 'translate(-50%,-50%)';
-      video.style.left = '50%';
-      video.style.top = '50%';
+      const sourceWidth = viewport?.sourceWidth || viewport?.width || video.videoWidth;
+      const sourceHeight = viewport?.sourceHeight || viewport?.height || video.videoHeight;
+      const sourceScale = Math.min(video.videoWidth / sourceWidth, video.videoHeight / sourceHeight);
+      const sourceX = (video.videoWidth - sourceWidth * sourceScale) / 2;
+      const sourceY = (video.videoHeight - sourceHeight * sourceScale) / 2;
+      const crop = viewport?.crop || {x:0, y:0, width:sourceWidth, height:sourceHeight};
+      const x = sourceX + crop.x * sourceScale, y = sourceY + crop.y * sourceScale;
+      const w = crop.width * sourceScale, h = crop.height * sourceScale;
+      // Keep the entire captured viewport visible. Any difference in aspect
+      // ratio becomes letterboxing instead of cropping an edge of the app.
+      const scale = Math.min(innerWidth / w, innerHeight / h);
+      video.style.transform = 'none';
+      video.style.left = ((innerWidth - w * scale) / 2 - x * scale) + 'px';
+      video.style.top = ((innerHeight - h * scale) / 2 - y * scale) + 'px';
       video.style.width = video.videoWidth * scale + 'px';
       video.style.height = video.videoHeight * scale + 'px';
-      const size = w + ':' + h;
-      if (lastSize !== size) { lastSize = size; post('size', {width:w, height:h}); }
+      const size = crop.width + ':' + crop.height;
+      if (lastSize !== size) { lastSize = size; post('size', {width:crop.width, height:crop.height}); }
     }
     function rendered() {
       if (closed || ready || !mediaAvailable) return;
@@ -328,27 +348,7 @@ final class ChromeStreamView: WKWebView, WKNavigationDelegate, WKScriptMessageHa
             } catch (_) {}
           };
         };
-        statsTimer = setInterval(async () => {
-          // Also catches moving the PiP between displays with different density.
-          sendDisplaySize();
-          try {
-            const stats = await peer.getStats();
-            if (closed) return;
-            stats.forEach(report => {
-              if (report.type !== 'inbound-rtp' || report.kind !== 'video') return;
-              const count = report.jitterBufferEmittedCount - (previousStats?.jitterBufferEmittedCount || 0);
-              const frames = report.framesDecoded - (previousStats?.framesDecoded || 0);
-              console.debug('PiP decoder', {
-                fps: report.framesPerSecond, dropped: report.framesDropped,
-                bufferMs: previousStats && count > 0
-                  ? 1000 * (report.jitterBufferDelay - previousStats.jitterBufferDelay) / count : null,
-                decodeMs: previousStats && frames > 0
-                  ? 1000 * (report.totalDecodeTime - previousStats.totalDecodeTime) / frames : null
-              });
-              previousStats = report;
-            });
-          } catch (_) {}
-        }, 3000);
+        displayHeartbeat = setInterval(sendDisplaySize, 3000);
         peer.onconnectionstatechange = () => {
           clearTimeout(disconnectTimer);
           if (closed) return;
@@ -380,7 +380,7 @@ final class ChromeStreamView: WKWebView, WKNavigationDelegate, WKScriptMessageHa
     }
     function stop() {
       closed = true; clearTimeout(disconnectTimer); clearTimeout(displayTimer);
-      clearInterval(statsTimer); peer?.close(); video.srcObject = null;
+      clearInterval(displayHeartbeat); peer?.close(); video.srcObject = null;
     }
     </script></body></html>
     """#

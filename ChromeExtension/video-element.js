@@ -20,6 +20,7 @@
     clearTimeout(session.resizeTimer);
     clearTimeout(session.refreshTimer);
     session.observer?.disconnect();
+    session.resizeObserver?.disconnect();
     session.cancelICE?.();
     session.events?.abort();
     session.videoEvents?.abort();
@@ -32,6 +33,10 @@
     stop(session.requestId);
   }
   function state(session) {
+    if (session.fallback) {
+      notifyGeometry(session);
+      return;
+    }
     if (sessions.get(session.requestId) !== session || session.channel?.readyState !== 'open') return;
     const video = session.video;
     if (!video || !session.available) {
@@ -45,6 +50,32 @@
         duration: Number.isFinite(video.duration) ? video.duration : null,
         seekStart: video.seekable.length ? video.seekable.start(0) : null,
         seekEnd: video.seekable.length ? video.seekable.end(video.seekable.length - 1) : null } }));
+  }
+  function videoState(video) {
+    return { paused: video.paused, muted: video.muted,
+      currentTime: Number.isFinite(video.currentTime) ? video.currentTime : 0,
+      duration: Number.isFinite(video.duration) ? video.duration : null,
+      seekStart: video.seekable.length ? video.seekable.start(0) : null,
+      seekEnd: video.seekable.length ? video.seekable.end(video.seekable.length - 1) : null };
+  }
+  function geometry(video) {
+    const rect = video.getBoundingClientRect();
+    const left = Math.max(0, rect.left), top = Math.max(0, rect.top);
+    const right = Math.min(innerWidth, rect.right ?? rect.left + rect.width);
+    const bottom = Math.min(innerHeight, rect.bottom ?? rect.top + rect.height);
+    return {
+      x: left, y: top, width: Math.max(1, right - left), height: Math.max(1, bottom - top),
+      viewportWidth: innerWidth, viewportHeight: innerHeight, pixelRatio: devicePixelRatio,
+      video: videoState(video)
+    };
+  }
+  function notifyGeometry(session) {
+    if (sessions.get(session.requestId) !== session || !session.video) return;
+    const next = geometry(session.video);
+    const key = JSON.stringify(next);
+    if (key === session.geometryKey) return;
+    session.geometryKey = key;
+    notify(session, 'geometry', { geometry: next });
   }
   async function control(session, command, time) {
     if (sessions.get(session.requestId) !== session) return;
@@ -76,9 +107,9 @@
       const parameters = session.sender.getParameters();
       if (!parameters.encodings?.length) return;
       parameters.degradationPreference = 'maintain-framerate';
-      parameters.encodings[0].maxFramerate = 60;
+      parameters.encodings[0].maxFramerate = 30;
       parameters.encodings[0].active = session.isVisible !== false;
-      parameters.encodings[0].maxBitrate = 40000000;
+      parameters.encodings[0].maxBitrate = 8000000;
       parameters.encodings[0].scaleResolutionDownBy = Math.max(1, Math.min(
         session.video.videoWidth / display.width, session.video.videoHeight / display.height));
       await session.sender.setParameters(parameters);
@@ -153,6 +184,51 @@
       const x = a.getBoundingClientRect(), y = b.getBoundingClientRect();
       return y.width * y.height - x.width * x.height;
     })[0];
+  }
+  function installFallback(session, video) {
+    session.fallback = true;
+    session.video = video;
+    session.available = true;
+    const options = { signal: session.events.signal };
+    const changed = () => notifyGeometry(session);
+    for (const event of ['play', 'pause', 'volumechange', 'seeked', 'timeupdate', 'durationchange', 'progress', 'resize'])
+      video.addEventListener(event, changed, options);
+    window.addEventListener('resize', changed, options);
+    window.addEventListener('scroll', changed, { capture: true, passive: true, signal: session.events.signal });
+    if (typeof ResizeObserver === 'function') {
+      session.resizeObserver = new ResizeObserver(changed);
+      session.resizeObserver.observe(video);
+    }
+    session.observer = new MutationObserver(() => scheduleFallbackRefresh(session));
+    session.observer.observe(document.documentElement, { childList: true, subtree: true });
+    session.healthTimer = setInterval(() => refreshFallback(session), 1500);
+    notifyGeometry(session);
+  }
+  function scheduleFallbackRefresh(session) {
+    if (sessions.get(session.requestId) !== session || session.refreshTimer) return;
+    session.refreshTimer = setTimeout(() => {
+      session.refreshTimer = undefined;
+      refreshFallback(session);
+    }, 250);
+  }
+  function refreshFallback(session) {
+    if (sessions.get(session.requestId) !== session) return;
+    const video = chooseVideo(session);
+    if (!video) {
+      availability(session, false);
+      return;
+    }
+    if (video !== session.video) {
+      clearInterval(session.healthTimer);
+      session.events.abort();
+      session.events = new AbortController();
+      session.resizeObserver?.disconnect();
+      session.observer?.disconnect();
+      installFallback(session, video);
+      return;
+    }
+    availability(session, true);
+    notifyGeometry(session);
   }
   async function refreshVideo(session) {
     if (sessions.get(session.requestId) !== session || session.refreshing) return;
@@ -276,6 +352,14 @@
       display: { width: 1280, height: 720 } };
     sessions.set(session.requestId, session);
     try {
+      const video = chooseVideo(session);
+      // Chrome deliberately blocks captureStream() for EME-backed players.
+      // Keep a lightweight control/geometry bridge and let the background
+      // capture the tab, while the native receiver displays only this rect.
+      if (video && (video.mediaKeys || typeof video.captureStream !== 'function')) {
+        installFallback(session, video);
+        return { ok: true, fallback: true, geometry: geometry(video) };
+      }
       const peer = session.peer = new RTCPeerConnection({ iceServers: [] });
       session.sender = peer.addTransceiver('video', { direction: 'sendonly' }).sender;
       await refreshVideo(session);
@@ -304,7 +388,7 @@
         if (peer.connectionState === 'disconnected') session.disconnectTimer = setTimeout(
           () => fail(session, new Error('動画を再接続しています。')), 5000);
       };
-      session.healthTimer = setInterval(() => refreshVideo(session), 500);
+      session.healthTimer = setInterval(() => refreshVideo(session), 1500);
       session.observer = new MutationObserver(() => scheduleRefresh(session));
       session.observer.observe(document.documentElement, { childList: true, subtree: true });
       // Capture load events for a newly inserted player before its own handlers
@@ -330,6 +414,10 @@
     const session = sessions.get(message.requestId);
     if (!session) return;
     if (message.action === 'stop') { stop(message.requestId); respond({ ok: true }); }
+    if (message.action === 'control' && session.fallback) {
+      control(session, message.command, message.time).then(() => respond({ ok: true }));
+      return true;
+    }
     if (message.action === 'answer' && message.streamId === session.streamId) {
       session.peer.setRemoteDescription({ type: 'answer', sdp: message.sdp })
         .then(() => respond({ ok: true }))

@@ -48,8 +48,18 @@ function iceComplete(peer) {
   });
 }
 function sendViewport(session) {
-  if (session.channel?.readyState === 'open')
-    session.channel.send(JSON.stringify({ action: 'viewport', ...session.viewport }));
+  if (session.channel?.readyState === 'open') {
+    const crop = session.crop;
+    session.channel.send(JSON.stringify({
+      action: 'viewport',
+      width: crop?.width || session.viewport.width,
+      height: crop?.height || session.viewport.height,
+      sourceWidth: session.viewport.width,
+      sourceHeight: session.viewport.height,
+      crop,
+      video: session.videoState
+    }));
+  }
 }
 // Serialize constraints and coalesce resize events; never queue old sizes.
 function scheduleResolution(session) {
@@ -66,7 +76,7 @@ async function updateResolution(session) {
   const sourceScale = Math.max(1, viewport.pixelRatio || 1);
   const target = session.display || { width: 1280, height: 720 };
   // Preserve the tab aspect ratio, including portrait tabs, at display density.
-  const scale = Math.min(sourceScale, 3840 / sourceWidth, 2160 / sourceHeight,
+  const scale = Math.min(sourceScale, 1920 / sourceWidth, 1080 / sourceHeight,
     Math.max(target.width / sourceWidth, target.height / sourceHeight));
   const width = Math.max(2, Math.round(sourceWidth * scale / 2) * 2);
   const height = Math.max(2, Math.round(sourceHeight * scale / 2) * 2);
@@ -83,7 +93,7 @@ async function updateResolution(session) {
     }
     if (session.isVisible !== false) await session.track.applyConstraints({
       width: { ideal: width }, height: { ideal: height },
-      frameRate: { ideal: 60, max: 60 }
+      frameRate: { ideal: 30, max: 30 }
     });
     session.resolution = key;
   } catch (error) {
@@ -95,14 +105,16 @@ async function updateResolution(session) {
 }
 async function start(message) {
   stop(message.requestId);
-  const session = { tabId: message.tabId, requestId: message.requestId, viewport: message.viewport };
+  const session = { tabId: message.tabId, requestId: message.requestId,
+    viewport: message.viewport, crop: message.crop, videoState: message.videoState,
+    videoElement: message.videoElement === true, connectionId: message.connectionId };
   sessions.set(session.requestId, session);
   try {
     session.stream = await navigator.mediaDevices.getUserMedia({
       audio: false,
       video: { mandatory: {
         chromeMediaSource: 'tab', chromeMediaSourceId: message.streamId,
-        minWidth: 1, minHeight: 1, maxWidth: 3840, maxHeight: 2160, maxFrameRate: 60
+        minWidth: 1, minHeight: 1, maxWidth: 1920, maxHeight: 1080, maxFrameRate: 30
       } }
     });
     if (sessions.get(session.requestId) !== session) { releaseSession(session); return; }
@@ -120,9 +132,9 @@ async function start(message) {
     const parameters = sender.getParameters();
     parameters.degradationPreference = 'maintain-framerate';
     if (parameters.encodings?.length) {
-      parameters.encodings[0].maxBitrate = 40000000;
+      parameters.encodings[0].maxBitrate = 8000000;
       parameters.encodings[0].scaleResolutionDownBy = 1;
-      parameters.encodings[0].maxFramerate = 60;
+      parameters.encodings[0].maxFramerate = 30;
       await sender.setParameters(parameters);
     }
     const channel = session.channel = peer.createDataChannel('viewport');
@@ -136,6 +148,11 @@ async function start(message) {
           scheduleResolution(session);
         }
         if (data.action === 'ready') send(session, 'ready').catch(() => {});
+        if (data.action === 'videoControl' && session.videoElement) {
+          chrome.runtime.sendMessage({ target: 'background', source: 'offscreen',
+            action: 'videoControl', requestId: session.requestId,
+            command: data.command, time: data.time }).catch(() => {});
+        }
         if (data.action === 'displaySize' && Number.isFinite(data.width) && Number.isFinite(data.height)
             && data.width > 0 && data.height > 0) {
           session.display = { width: Math.min(7680, data.width), height: Math.min(7680, data.height) };
@@ -143,24 +160,6 @@ async function start(message) {
         }
       } catch (_) {}
     };
-    let previousStats;
-    session.statsTimer = setInterval(async () => {
-      try {
-        const stats = await sender.getStats();
-        if (sessions.get(session.requestId) !== session) return;
-        stats.forEach(report => {
-          if (report.type !== 'outbound-rtp' || report.kind !== 'video') return;
-          const frames = report.framesEncoded - (previousStats?.framesEncoded || 0);
-          console.debug('PiP encoder', {
-            fps: report.framesPerSecond, width: report.frameWidth, height: report.frameHeight,
-            limitation: report.qualityLimitationReason,
-            encodeMs: frames > 0 && previousStats
-              ? 1000 * (report.totalEncodeTime - previousStats.totalEncodeTime) / frames : null
-          });
-          previousStats = report;
-        });
-      } catch (_) {}
-    }, 3000);
     peer.onconnectionstatechange = () => {
       clearTimeout(session.disconnectTimer);
       if (peer.connectionState === 'failed') fail(session, new Error('タブ映像の接続が失われました。'));
@@ -189,6 +188,19 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     if (message.action === 'viewport') {
       session.viewport = message.viewport; sendViewport(session); sendResponse({ ok: true });
       scheduleResolution(session);
+    }
+    if (message.action === 'geometry') {
+      session.viewport = message.viewport;
+      session.crop = message.crop;
+      session.videoState = message.videoState;
+      sendViewport(session);
+      sendResponse({ ok: true });
+      scheduleResolution(session);
+    }
+    if (message.action === 'availability') {
+      if (session.channel?.readyState === 'open')
+        session.channel.send(JSON.stringify({ action: 'videoAvailability', available: message.available === true }));
+      sendResponse({ ok: true });
     }
   }
 });
